@@ -1,0 +1,38 @@
+{
+  "name": "disco",
+  "version": "2.0.0",
+  "description": "Disco - P2P Decentralized Communication Platform",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Disco Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "pg": "^8.20.0"
+  },
+  "build": {
+    "appId": "com.disco.app",
+    "productName": "Disco",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
+}

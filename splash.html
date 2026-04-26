@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: transparent; display: flex; align-items: center;
+  justify-content: center; height: 100vh; font-family: 'Segoe UI', sans-serif;
+  -webkit-app-region: drag; overflow: hidden;
+}
+.splash {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+}
+.logo-container {
+  width: 100px; height: 100px; position: relative;
+  animation: float 2s ease-in-out infinite;
+}
+.logo-circle {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, #5865f2, #7289da);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(88,101,242,0.4);
+}
+.logo-circle svg { width: 60px; height: 60px; fill: #fff; }
+.pulse-ring {
+  position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+  border-radius: 50%; border: 3px solid rgba(88,101,242,0.3);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+.pulse-ring:nth-child(2) { animation-delay: 0.5s; }
+.loading-bar-container {
+  width: 200px; height: 4px; background: rgba(255,255,255,0.1);
+  border-radius: 2px; overflow: hidden;
+}
+.loading-bar {
+  height: 100%; width: 0%; background: linear-gradient(90deg, #5865f2, #7289da, #5865f2);
+  background-size: 200% 100%; border-radius: 2px;
+  animation: load 2.5s ease-in-out forwards, shimmer 1.5s ease-in-out infinite;
+}
+.loading-text {
+  color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 500;
+  animation: textFade 2.5s ease-in-out;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+@keyframes load {
+  0% { width: 0%; }
+  30% { width: 40%; }
+  60% { width: 70%; }
+  90% { width: 90%; }
+  100% { width: 100%; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes textFade {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+}
+</style>
+</head>
+<body>
+<div class="splash">
+  <div class="logo-container">
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="logo-circle">
+      <svg viewBox="0 0 28 20"><path d="M23.02 1.68C21.31.88 19.51.32 17.66 0c-.25.46-.48.93-.69 1.42-1.97-.3-3.97-.3-5.94 0-.2-.49-.43-.97-.69-1.42C8.49.32 6.68.89 4.98 1.69.72 8.01-.44 14.17.14 20.24c2.18 1.62 4.62 2.84 7.23 3.6.52-.71 1-1.46 1.43-2.25-.79-.28-1.53-.63-2.24-1.04.2-.15.4-.3.6-.46 5.09 2.33 10.62 2.33 15.68 0 .2.16.4.32.6.46-.71.41-1.46.76-2.25 1.04.43.79.9 1.54 1.42 2.25 2.61-.76 5.06-1.97 7.24-3.6.69-7.16-.93-13.37-6.79-18.56z"/></svg>
+    </div>
+  </div>
+  <div class="loading-bar-container">
+    <div class="loading-bar"></div>
+  </div>
+</div>
+</body>
+</html>

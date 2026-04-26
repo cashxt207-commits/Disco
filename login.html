@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><title>Disco - Giriş</title>
+<link rel="stylesheet" href="css/disco.css">
+</head>
+<body>
+<div class="titlebar">
+  <span class="tb-title">Disco</span>
+  <div class="tb-btns">
+    <button class="tb-btn" onclick="electron.minimize()">─</button>
+    <button class="tb-btn" onclick="electron.maximize()">☐</button>
+    <button class="tb-btn close" onclick="electron.close()">✕</button>
+  </div>
+</div>
+<div class="login-bg">
+  <div class="login-box">
+    <div id="loginForm">
+      <h1>Tekrar hoş geldin!</h1>
+      <p class="sub">Seni tekrar gördüğümüze sevindik!</p>
+      <div id="loginErr" class="err-msg" style="display:none"></div>
+      <div class="lf"><label>E-posta<span class="req">*</span></label><input type="email" id="lEmail" placeholder="ornek@email.com"></div>
+      <div class="lf"><label>Şifre<span class="req">*</span></label><input type="password" id="lPass" placeholder="Şifreni gir"></div>
+      <button class="btn btn-p" style="width:100%;margin-top:8px" onclick="doLogin()">Giriş Yap</button>
+      <p class="switch-mode">Hesabın yok mu? <a onclick="showReg()">Kayıt ol</a></p>
+    </div>
+    <div id="regForm" style="display:none">
+      <h1>Hesap Oluştur</h1>
+      <div id="regErr" class="err-msg" style="display:none"></div>
+      <div class="lf"><label>E-posta<span class="req">*</span></label><input type="email" id="rEmail" placeholder="ornek@email.com"></div>
+      <div class="lf"><label>Kullanıcı adı<span class="req">*</span></label><input type="text" id="rUser" placeholder="Kullanıcı adın"></div>
+      <div class="lf"><label>Şifre<span class="req">*</span></label><input type="password" id="rPass" placeholder="Şifreni belirle"></div>
+      <div class="policy-box">
+        <strong style="color:#f2f3f5">P2P Kaynak Paylaşım Politikası</strong><br><br>
+        Disco, merkezi sunucular yerine eşler arası (P2P) teknoloji kullanır. Uygulamayı kullanarak aşağıdaki koşulları kabul edersiniz:<br><br>
+        <b>1. Bilgisayar Kaynakları:</b> Disco, sesli sohbet ve veri iletimi için CPU gücünüzün %5-15'ini kullanabilir.<br><br>
+        <b>2. İnternet Bant Genişliği:</b> Aylık ek 2-5 GB bant genişliği kullanımı.<br><br>
+        <b>3. Ağ Aktarımı:</b> Cihazınız düğüm noktası olarak çalışabilir. Tüm veriler uçtan uca şifrelenir.<br><br>
+        <b>4. Depolama:</b> Maks. 1 GB yerel önbellek kullanımı.<br><br>
+        <b>5. Gizlilik:</b> IP adresiniz P2P bağlantılarda görünebilir.
+      </div>
+      <div class="policy-cb">
+        <input type="checkbox" id="pAgree">
+        <label for="pAgree">P2P Kaynak Paylaşım Politikasını okudum ve kabul ediyorum</label>
+      </div>
+      <button class="btn btn-p" style="width:100%;margin-top:12px" onclick="doReg()">Devam Et</button>
+      <p class="switch-mode">Zaten hesabın var mı? <a onclick="showLogin()">Giriş yap</a></p>
+    </div>
+  </div>
+</div>
+<script src="js/store.js"></script>
+<script>
+if(Store.getCurrentUser()) electron.navigate('index.html');
+function showLogin(){document.getElementById('loginForm').style.display='block';document.getElementById('regForm').style.display='none';}
+function showReg(){document.getElementById('loginForm').style.display='none';document.getElementById('regForm').style.display='block';}
+function err(id,m){const e=document.getElementById(id);e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
+function doLogin(){
+  const email=document.getElementById('lEmail').value.trim(),pw=document.getElementById('lPass').value;
+  if(!email||!pw)return err('loginErr','Tüm alanları doldurun');
+  const r=Store.login(email,pw);if(r.error)return err('loginErr',r.error);
+  electron.navigate('index.html');
+}
+function doReg(){
+  const email=document.getElementById('rEmail').value.trim(),user=document.getElementById('rUser').value.trim(),pw=document.getElementById('rPass').value;
+  if(!email||!user||!pw)return err('regErr','Tüm alanları doldurun');
+  if(!document.getElementById('pAgree').checked)return err('regErr','Politikayı kabul etmelisiniz');
+  const r=Store.register(user,email,pw);if(r.error)return err('regErr',r.error);
+  electron.navigate('index.html');
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){document.getElementById('loginForm').style.display!=='none'?doLogin():doReg();}}));
+</script>
+</body>
+</html>

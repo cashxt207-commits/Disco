@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><title>Disco</title>
+<link rel="stylesheet" href="css/disco.css">
+</head>
+<body>
+<div class="titlebar">
+  <span class="tb-title">Disco</span>
+  <div class="tb-btns">
+    <button class="tb-btn" onclick="electron.minimize()">─</button>
+    <button class="tb-btn" onclick="electron.maximize()">☐</button>
+    <button class="tb-btn close" onclick="electron.close()">✕</button>
+  </div>
+</div>
+<div class="app">
+  <!-- SERVER BAR -->
+  <div class="servers" id="srvBar">
+    <div class="srv home active" id="homeBtn" onclick="App.goHome()" title="Ana Sayfa">
+      <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M22 4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4z"/></svg>
+    </div>
+    <div class="srv-sep"></div>
+    <div id="srvList"></div>
+    <div class="srv add" title="Sunucu Ekle" onclick="App.showModal('createSrv')">+</div>
+    <div class="srv explore" title="Sunucu Keşfet" onclick="App.showDiscover()">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    </div>
+  </div>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-hdr" id="sideHdr"><span>Direkt Mesajlar</span></div>
+    <div id="chContent" class="ch-list"></div>
+    <div class="voice-panel" id="voicePanel">
+      <div class="vp-status"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg><span id="vpText">Ses Bağlantısı</span></div>
+      <div class="vp-ch" id="vpCh"></div>
+      <div class="vp-ctrls">
+        <button class="vp-btn" id="vpCam" onclick="Voice.toggleCamera()" title="Kamera"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></button>
+        <button class="vp-btn" id="vpScreen" onclick="Voice.toggleScreen()" title="Ekran Paylaş"><svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg></button>
+        <button class="vp-btn" id="vpMute" onclick="Voice.toggleMute()" title="Mikrofon"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg></button>
+        <button class="vp-btn" id="vpNoise" onclick="Voice.toggleNoiseSuppression()" title="Gürültü Azaltma"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></button>
+        <button class="vp-btn" id="vpDeaf" onclick="Voice.toggleDeafen()" title="Sağırlaştır"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></button>
+        <button class="vp-btn disconnect" onclick="Voice.leave()" title="Bağlantıyı Kes"><svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button>
+      </div>
+    </div>
+    <div class="u-panel" id="uPanel"></div>
+  </div>
+  <!-- MAIN -->
+  <div class="chat" id="main"></div>
+  <!-- MEMBERS -->
+  <div class="members" id="memList" style="display:none"></div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="createSrv"><div class="modal"><div class="m-title">Sunucu Oluştur</div><div class="m-sub">Sunucunu kişiselleştir</div><div class="m-field"><label class="m-label">Sunucu adı</label><input class="m-input" id="newSrvName" placeholder="Sunucu adı"></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-p" onclick="App.createServer()">Oluştur</button></div></div></div>
+
+<div class="modal-bg" id="joinSrv"><div class="modal"><div class="m-title">Sunucuya Katıl</div><div class="m-sub">Davet kodu veya disco.gg linki gir</div><div class="m-field"><label class="m-label">Davet kodu</label><input class="m-input" id="joinCode" placeholder="Örn: ABC123 veya disco.gg/isim"></div><div id="joinErr" class="err-msg" style="display:none"></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-p" onclick="App.joinServer()">Katıl</button></div></div></div>
+
+<div class="modal-bg" id="inviteMdl"><div class="modal"><div class="m-title">Arkadaşlarını Davet Et</div><div class="m-sub" id="invSrvName"></div><div class="invite-box"><span id="invCode"></span><button class="btn btn-p" onclick="App.copyInvite()">Kopyala</button></div><div class="m-field" style="margin-top:16px"><label class="m-label">Davet linkini kanala gönder</label><button class="btn btn-g" style="width:100%" onclick="App.sendInviteToChannel()">Kanala Gönder</button></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">Kapat</button></div></div></div>
+
+<div class="modal-bg" id="createChMdl"><div class="modal"><div class="m-title">Kanal Oluştur</div><div class="m-field"><label class="m-label">Kanal türü</label><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-p" id="chTText" onclick="App.setChType('text')" style="flex:1"><svg width="16" height="16" viewBox="0 0 24 24" style="fill:#fff;vertical-align:middle;margin-right:4px"><path d="M5.88 21l.71-4h-4l.35-2h4l1.06-6h-4l.35-2h4l.71-4h2l-.71 4h6l.71-4h2l-.71 4h4l-.35 2h-4l-1.06 6h4l-.35 2h-4l-.71 4h-2l.71-4h-6l-.71 4h-2zM9.41 13h6l1.06-6h-6l-1.06 6z"/></svg> Yazı</button><button class="btn btn-s" id="chTVoice" onclick="App.setChType('voice')" style="flex:1;border:1px solid #4e5058"><svg width="16" height="16" viewBox="0 0 24 24" style="fill:currentColor;vertical-align:middle;margin-right:4px"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg> Ses</button></div></div><div class="m-field"><label class="m-label">Kanal adı</label><input class="m-input" id="newChName" placeholder="yeni-kanal"></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-p" onclick="App.createChannel()">Oluştur</button></div></div></div>
+
+
+
+<div class="modal-bg" id="createGrpMdl"><div class="modal"><div class="m-title">Grup Oluştur</div><div class="m-field"><label class="m-label">Grup adı</label><input class="m-input" id="grpName" placeholder="Grup adı"></div><div class="m-field"><label class="m-label">Arkadaşlarını seç</label><div id="grpList" style="max-height:200px;overflow-y:auto"></div></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-p" onclick="App.createGroup()">Oluştur</button></div></div></div>
+
+<!-- Nitro Purchase Modal -->
+<div class="modal-bg" id="nitroMdl"><div class="modal" style="max-width:560px"><div class="m-title" style="background:var(--nitro-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:28px">Disco Nitro</div><div class="m-sub">Profilini özelleştir, banner ekle ve daha fazlası!</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0"><div class="nitro-card" style="cursor:pointer" onclick="App.showNitroPurchase('basic')"><div class="nitro-badge" style="margin-bottom:8px">NITRO BASIC</div><div style="font-size:24px;font-weight:700;color:var(--header-primary)">₺49.99<span style="font-size:13px;font-weight:400;color:var(--text-muted)">/ay</span></div><ul style="font-size:12px;color:var(--text-muted);margin-top:8px;padding-left:16px;list-style:none"><li>✓ Özel avatar</li><li>✓ 50MB dosya yükleme</li><li>✓ Özel emoji</li></ul></div><div class="nitro-card" style="cursor:pointer;border-color:rgba(255,115,250,.4)" onclick="App.showNitroPurchase('full')"><div class="nitro-badge" style="margin-bottom:8px">NITRO</div><div style="font-size:24px;font-weight:700;color:var(--header-primary)">₺99.99<span style="font-size:13px;font-weight:400;color:var(--text-muted)">/ay</span></div><ul style="font-size:12px;color:var(--text-muted);margin-top:8px;padding-left:16px;list-style:none"><li>✓ Tüm Basic özellikleri</li><li>✓ Profil banner</li><li>✓ 500MB dosya yükleme</li><li>✓ 2x Sunucu Boost</li><li>✓ HD video</li><li>✓ Özel profil temaları</li></ul></div></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">Kapat</button></div></div></div>
+
+<!-- Nitro Checkout -->
+<div class="modal-bg" id="nitroBuyMdl"><div class="modal" style="max-width:440px"><div class="m-title" id="nitroBuyTitle">Nitro Satın Al</div><div class="nitro-purchase"><div class="nitro-badge" id="nitroBuyBadge">NITRO</div><div class="nitro-price" id="nitroBuyPrice">₺99.99</div><div class="nitro-period">aylık abonelik</div><ul class="nitro-features" id="nitroBuyFeatures"></ul><div class="payment-form"><label>Kart Numarası</label><input id="payCard" placeholder="1234 5678 9012 3456" maxlength="19" oninput="this.value=this.value.replace(/[^\d ]/g,'').replace(/(\d{4})(?=\d)/g,'$1 ')"><div class="payment-row"><div style="flex:1"><label>Son Kullanma</label><input id="payExpiry" placeholder="AA/YY" maxlength="5" oninput="this.value=this.value.replace(/[^\d/]/g,'');if(this.value.length===2&&!this.value.includes('/'))this.value+='/'"></div><div style="flex:1"><label>CVV</label><input id="payCvv" placeholder="123" maxlength="3" type="password"></div></div><label>Kart Üzerindeki İsim</label><input id="payName" placeholder="Ad Soyad"></div></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-n" id="nitroBuyBtn" onclick="App.completePurchase()">Satın Al</button></div></div></div>
+
+<div class="modal-bg" id="boostMdl"><div class="modal"><div class="m-title">Sunucu Boost</div><div class="m-sub" id="boostSrvName"></div><div class="m-field"><label class="m-label">Boost sayısı</label><input class="m-input" id="boostCount" type="number" value="1" min="1" max="30"></div><div style="font-size:13px;color:var(--text-muted);margin:8px 0">Her boost sunucuya ek özellikler kazandırır</div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-n" onclick="App.doBoost()">Boost Bas</button></div></div></div>
+
+<div class="modal-bg" id="statusMdl"><div class="modal"><div class="m-title">Durumunu Ayarla</div><div class="m-field"><label class="m-label">Durum mesajı</label><input class="m-input" id="statusText" placeholder="Bir şeyler yaz..."></div><div class="m-field"><label class="m-label">Durum</label><select class="m-input" id="statusType"><option value="online">🟢 Çevrimiçi</option><option value="idle">🌙 Boşta</option><option value="dnd">⛔ Rahatsız Etmeyin</option><option value="invisible">⚫ Görünmez</option></select></div><div class="m-acts"><button class="btn btn-s" onclick="App.closeModals()">İptal</button><button class="btn btn-p" onclick="App.setStatus()">Kaydet</button></div></div></div>
+
+<!-- Reaction picker (small popup) -->
+<div id="reactionPick" style="display:none;position:fixed;z-index:2000;background:var(--bg-float);border-radius:8px;padding:8px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:none">
+  <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:2px" id="reactionGrid"></div>
+</div>
+
+<!-- Settings page -->
+<div class="settings" id="settingsPage">
+  <div class="set-side" id="setSide"></div>
+  <div class="set-content" id="setCont"></div>
+  <button class="set-close" onclick="App.closeSettings()">✕<br><span style="font-size:10px;color:var(--text-muted)">ESC</span></button>
+</div>
+
+<!-- Server Settings page -->
+<div class="settings" id="srvSettingsPage">
+  <div class="set-side" id="srvSetSide"></div>
+  <div class="set-content" id="srvSetCont"></div>
+  <button class="set-close" onclick="App.closeSrvSettings()">✕<br><span style="font-size:10px;color:var(--text-muted)">ESC</span></button>
+</div>
+
+<!-- Profile popup container -->
+<div id="profilePopup"></div>
+
+<div class="ctx" id="ctxMenu"></div>
+<div class="drop-over" id="dropOver"><div class="drop-text">Dosyayı buraya bırak</div></div>
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="js/store.js"></script>
+<script src="js/emoji.js"></script>
+<script src="js/giphy.js"></script>
+<script src="js/sounds.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
